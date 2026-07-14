@@ -6,6 +6,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
+		echo 'Terraform CI Pipeline Started'
                 echo 'Repository checked out successfully.'
             }
         }
