@@ -38,7 +38,13 @@ EOF
             steps {
                 sh 'terraform init'
             }
-        }
+        
+	}
+	stage('Debug Terraform State') {
+    steps {
+        sh 'terraform state list || true'
+    }
+}
 
         stage('Terraform Validate') {
             steps {
