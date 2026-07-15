@@ -6,8 +6,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-		echo 'Terraform CI Pipeline Started'
-                echo 'Repository checked out successfully.'
+                echo 'Terraform CI Pipeline Started'
             }
         }
 
@@ -17,16 +16,31 @@ pipeline {
             }
         }
 
-        stage('Terraform Validate') {
+        stage('Terraform Init') {
             steps {
                 sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
                 sh 'terraform validate'
             }
         }
 
-    }
+        stage('Terraform Plan') {
+            steps {
+                sh 'terraform plan -out=tfplan'
+            }
+        }
 
+    }
 }
+
+
+
+
+
 
 
 
