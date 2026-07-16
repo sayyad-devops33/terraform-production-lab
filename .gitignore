@@ -5,7 +5,7 @@
 .terraform.lock.hcl
 
 # Variables
-*.tfvars
+terraform.tfvars
 
 # Crash logs
 crash.log
