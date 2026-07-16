@@ -24,14 +24,13 @@ resource "aws_security_group" "web_sg" {
 
 resource "aws_instance" "web_server" {
 
-  ami                         = var.ami
-  instance_type               = var.instance_type
+  ami           = var.ami
+  instance_type = var.instance_type
 
-  subnet_id                   = var.subnet_id
+  subnet_id = var.subnet_id
 
-  vpc_security_group_ids      = [aws_security_group.web_sg.id]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
 
-  associate_public_ip_address = true
 
   key_name = var.key_name
 
