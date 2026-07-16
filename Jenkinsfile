@@ -64,5 +64,11 @@ EOF
             }
         }
 
+        stage('Terraform Apply') {
+            steps {
+                sh 'terraform apply -no-color tfplan'
+            }
+        }
+
     }
 }
