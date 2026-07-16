@@ -36,7 +36,7 @@ EOF
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                sh 'terraform init -no-color'
             }
         
 	}
@@ -48,13 +48,13 @@ EOF
 
         stage('Terraform Validate') {
             steps {
-                sh 'terraform validate'
+                sh 'terraform validate -no-color'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -out=tfplan'
+                sh 'terraform plan -no-color -out=tfplan'
             }
         }
     }
