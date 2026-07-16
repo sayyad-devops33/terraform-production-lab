@@ -1,6 +1,13 @@
 pipeline {
 
     agent any
+	parameters {
+    choice(
+        name: 'ENVIRONMENT',
+        choices: ['dev', 'test', 'prod'],
+        description: 'Select the environment to deploy'
+    )
+  }
 
     stages {
 
@@ -11,22 +18,6 @@ pipeline {
             }
         }
 
-        stage('Create Terraform Variables') {
-            steps {
-                sh '''
-cat > terraform.tfvars <<EOF
-aws_region         = "ap-south-1"
-vpc_cidr           = "10.20.0.0/16"
-public_subnet_cidr = "10.20.1.0/24"
-availability_zone  = "ap-south-1a"
-vpc_name           = "production-vpc"
-ami                = "ami-0f58b397bc5c1f2e8"
-instance_type      = "t3.micro"
-key_name           = "mykeypair"
-EOF
-'''
-            }
-        }
 
         stage('Terraform Format') {
             steps {
@@ -36,7 +27,7 @@ EOF
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init -no-color'
+                sh "terraform init -no-color -reconfigure -backend-config=backend/${params.ENVIRONMENT}.hcl"
             }
         }
 
@@ -48,7 +39,7 @@ EOF
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -no-color -out=tfplan'
+		sh "terraform plan -no-color -var-file=terraform/${params.ENVIRONMENT}.tfvars -out=tfplan"
             }
         }
 
@@ -58,12 +49,16 @@ EOF
             }
         }
 
-        stage('Manual Approval') {
-            steps {
-                input message: 'Do you want to apply this Terraform plan?', ok: 'Apply'
-            }
+	stage('Manual Approval') {
+         when {
+        expression {
+            params.ENVIRONMENT == 'prod'
         }
-
+    }
+    steps {
+        input message: 'Do you want to apply this Terraform plan?', ok: 'Apply'
+    }
+}
         stage('Terraform Apply') {
             steps {
                 sh 'terraform apply -no-color tfplan'
