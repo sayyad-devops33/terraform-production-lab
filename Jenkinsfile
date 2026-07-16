@@ -38,8 +38,7 @@ EOF
             steps {
                 sh 'terraform init -no-color'
             }
-	}
-}
+        }
 
         stage('Terraform Validate') {
             steps {
@@ -51,32 +50,19 @@ EOF
             steps {
                 sh 'terraform plan -no-color -out=tfplan'
             }
-	}
-	stage('Archive Plan') {
-    steps {
-        archiveArtifacts artifacts: 'tfplan', fingerprint: true
-    }
-}
-stage('Manual Approval') {
-    steps {
-        input message: 'Do you want to apply this Terraform plan?', ok: 'Apply'
-    }
-}
         }
+
+        stage('Archive Plan') {
+            steps {
+                archiveArtifacts artifacts: 'tfplan', fingerprint: true
+            }
+        }
+
+        stage('Manual Approval') {
+            steps {
+                input message: 'Do you want to apply this Terraform plan?', ok: 'Apply'
+            }
+        }
+
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
